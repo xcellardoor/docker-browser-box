@@ -1,7 +1,9 @@
 #!/bin/bash
 
 PATH=/usr/sbin:/usr/bin:/sbin:/bin
-
+# TODO: ensure this gets updated by entrypoint script on install
+WEB_BROWSER_USER=browser
+BROWSERS=(chromium-browser firefox google-chrome google-chrome-stable tor-browser)
 # do we need to use sudo to start docker containers?
 ( id -Gn | grep -q docker ) || SUDO=sudo
 
@@ -63,6 +65,13 @@ prepare_docker_volume_parameters() {
   VOLUMES+=" --volume=/run/user/${USER_UID}/pulse:/run/pulse"
 }
 
+# TODO: Need to add tor and chromium userdata dirs
+#       if wanted by the user, maybe use env variables
+prepare_docker_userdata_volumes() {
+  [ -n ${CHROME_USERDATA} ] && VOLUMES+=" --volume=${CHROME_USERDATA}:/home/${WEB_BROWSER_USER}/.config/google-chrome"
+  [ -n ${FIREFOX_USERDATA} ] && VOLUMES+=" --volume=${FIREFOX_USERDATA}:/home/${WEB_BROWSER_USER}/.mozilla"
+}
+
 prepare_docker_device_parameters() {
   # enumerate video devices for webcam support
   VIDEO_DEVICES=
@@ -74,6 +83,29 @@ prepare_docker_device_parameters() {
   done
 }
 
+browser_exec () {
+  # check state of default $BROWSER
+  browser_state=$(docker inspect --format "{{.State.Running}}" ${BROWSER} 2>/dev/null)
+  if [[ "${browser_state}" == "true" ]]; then
+    ${SUDO} docker exec -i entrypoint.sh ${BROWSER} "$@" 2>/dev/null
+    exit $?
+  else
+    # checke if any other browser's are open to open link
+    for browser in ${BROWSERS[@]}; do
+      browser_state= \
+        $(docker inspect --format "{{.State.Running}}" ${browser} 2>/dev/null)
+      if [[ "${browser_state}" == "true" ]]; then
+        ${SUDO} docker exec -i entrypoint.sh ${browser} "$@" 2>/dev/null
+        exit $?
+      else
+        # no browser is currently running, let's start the default one
+        default_browser=$(which ${BROWSER})
+        exec ${default_browser} $@
+      fi
+    done
+  fi
+}
+
 prog=$(basename $0)
 exec=$(which $prog)
 if [[ ${prog} == "browser-box" ]]; then
@@ -81,6 +113,9 @@ if [[ ${prog} == "browser-box" ]]; then
     google-chrome|google-chrome-stable|tor-browser|chromium-browser|firefox)
       prog=${1}
       shift
+      ;;
+    browser-exec)
+      browser_exec $@
       ;;
     *|help)
       list_browsers
@@ -100,8 +135,10 @@ prepare_docker_device_parameters
 
 echo "Starting ${prog}..."
 ${SUDO} docker run -d \
+  ${DOCKER_BROWSER_PARMS} \
   ${CAPABILITIES} \
   ${ENV_VARS} \
   ${VIDEO_DEVICES} \
   ${VOLUMES} \
+  --name="${prog}" \
   sameersbn/browser-box:latest ${prog} $@ >/dev/null

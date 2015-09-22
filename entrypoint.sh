@@ -17,6 +17,8 @@ install_browser_box() {
   ln -sf browser-box /target/chromium-browser
   echo "Installing firefox..."
   ln -sf browser-box /target/firefox
+  echo "Installing url luancher..."
+  ln -sf browser-box /target/browser-exec
 }
 
 uninstall_browser_box() {
