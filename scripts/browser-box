@@ -40,6 +40,8 @@ prepare_docker_caps_parameters() {
   case ${1} in
     google-chrome|google-chrome-stable|chromium-browser)
       CAPABILITIES+="--cap-add=SYS_ADMIN"
+      # passing gpu for SANDBOXED support
+      [ -d /dev/dri ] && CAPABILITIES+=" --device /dev/dri"
       ;;
   esac
 }
