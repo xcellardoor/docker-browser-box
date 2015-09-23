@@ -69,6 +69,9 @@ prepare_docker_volume_parameters() {
 # TODO: Need to add tor and chromium userdata dirs
 #       if wanted by the user, maybe use env variables
 prepare_docker_userdata_volumes() {
+  if [[ -n ${CHROME_USERDATA} ]]; then
+    echo " --volume=${CHROME_USERDATA}:/home/${WEB_BROWSER_USER}/.config/google-chrome"
+  fi
   [ -n ${CHROME_USERDATA} ] && VOLUMES+=" --volume=${CHROME_USERDATA}:/home/${WEB_BROWSER_USER}/.config/google-chrome"
   [ -n ${FIREFOX_USERDATA} ] && VOLUMES+=" --volume=${FIREFOX_USERDATA}:/home/${WEB_BROWSER_USER}/.mozilla"
 }
@@ -132,11 +135,12 @@ cleanup_stopped_browser_box_instances
 prepare_docker_caps_parameters $prog
 prepare_docker_env_parameters
 prepare_docker_volume_parameters
+prepare_docker_userdata_volumes
 prepare_docker_device_parameters
 
 echo "Starting ${prog}..."
 ${SUDO} docker run -d \
-  ${DOCKER_BROWSER_PARMS} \
+  ${BROWSER_BOX_PARMS} \
   ${CAPABILITIES} \
   ${ENV_VARS} \
   ${VIDEO_DEVICES} \

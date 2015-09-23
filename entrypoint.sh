@@ -37,9 +37,22 @@ uninstall_browser_box() {
 }
 
 create_user() {
+  # ensure home directory is owned by browser
+  # and that profile files exist
+  if [[ -d /home/${WEB_BROWSER_USER} ]]; then
+    chown ${USER_UID}:${USER_GID} /home/browser
+    # copy user files from /etc/skel
+    cp /etc/skel/.bashrc /home/${WEB_BROWSER_USER}
+    cp /etc/skel/.bash_logout /home/${WEB_BROWSER_USER}
+    cp /etc/skel/.profile /home/${WEB_BROWSER_USER}
+    chown ${USER_UID}:${USER_GID} \
+		/home/${WEB_BROWSER_USER}/.bashrc \
+		/home/${WEB_BROWSER_USER}/.profile \
+		/home/${WEB_BROWSER_USER}/.bash_logout
+  fi
   # create group with USER_GID
   if ! getent group ${WEB_BROWSER_USER} >/dev/null; then
-    groupadd -f -g ${USER_GID} ${WEB_BROWSER_USER}
+    groupadd -f -g ${USER_GID} ${WEB_BROWSER_USER} 2> /dev/null
   fi
 
   # create user with USER_UID

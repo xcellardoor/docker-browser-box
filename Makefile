@@ -28,10 +28,15 @@ help:
 	@echo "   2. make bash             - bash login"
 	@echo ""
 
-build:
-	@docker build --tag=${USER}/browser-box .
+clean:
+	@docker rm -f `docker ps -a | grep "${USER}/browser-box" | awk '{print $$1}'` > /dev/null 2>&1 || exit 0
+	@docker rmi `docker images  | grep "${USER}/browser-box" | awk '{print $$3}'` > /dev/null 2>&1 || exit 0
 
-install uninstall: build
+
+build: clean
+	@docker build --rm=true --tag=${USER}/browser-box .
+
+install uninstall: clean build
 	@docker run -it --rm \
 		--volume=/usr/local/bin:/target \
 		${USER}/browser-box:latest $@
