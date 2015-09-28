@@ -1,4 +1,4 @@
-# sameersbn/browser-box:latest
+# hurricane/browser-box:latest
 
 - [Introduction](#introduction)
   - [Contributing](#contributing)
@@ -32,7 +32,6 @@ If you find this image useful here's how you can help:
 
 - Send a pull request with your awesome features and bug fixes
 - Help users resolve their [issues](../../issues?q=is%3Aopen+is%3Aissue).
-- Support the development of this image with a [donation](http://www.damagehead.com/donate/)
 
 ## Issues
 
@@ -50,16 +49,16 @@ If the above recommendations do not help then [report your issue](../../issues/n
 
 ## Installation
 
-This image is available as a [trusted build](//hub.docker.com/r/sameersbn/browser-box) on the [Docker hub](//hub.docker.com) and is the recommended method of installation.
+This image is available as a [trusted build](//hub.docker.com/r/hurricane/browser-box) on the [Docker hub](//hub.docker.com) and is the recommended method of installation.
 
 ```bash
-docker pull sameersbn/browser-box:latest
+docker pull hurricane/browser-box:latest
 ```
 
 Alternatively you can build the image yourself.
 
 ```bash
-git clone https://github.com/sameersbn/docker-browser-box.git
+git clone https://github.com/hurricane/docker-browser-box.git
 cd docker-browser-box
 docker build --tag $USER/browser-box .
 ```
@@ -69,7 +68,7 @@ With the image locally available, install the wrapper scripts using:
 ```bash
 docker run -it --rm \
   --volume /usr/local/bin:/target \
-  sameersbn/browser-box:latest install
+  hurricane/browser-box:latest install
 ```
 
 If you would the settings for chrome and firfox to persist
@@ -80,7 +79,7 @@ docker run -it --rm \
   --volume /usr/local/bin:/target \
   --env CHROME_USERDATA=/home/username/.chrome
   --env FIREFOX_USERDATA=/home/username/.mozillia
-  sameersbn/browser-box:latest install
+  hurricane/browser-box:latest install
 ```
 
 
@@ -115,7 +114,7 @@ To upgrade to newer releases:
   1. Download the updated Docker image:
 
   ```bash
-  docker pull sameersbn/browser-box:latest
+  docker pull hurricane/browser-box:latest
   ```
 
   2. Run `install` to make sure the host scripts are updated.
@@ -123,7 +122,7 @@ To upgrade to newer releases:
   ```bash
   docker run -it --rm \
     --volume /usr/local/bin:/target \
-    sameersbn/browser-box:latest install
+    hurricane/browser-box:latest install
   ```
 
 ## Uninstallation
@@ -131,7 +130,7 @@ To upgrade to newer releases:
 ```bash
 docker run -it --rm \
   --volume /usr/local/bin:/target \
-  sameersbn/browser-box:latest uninstall
+  hurricane/browser-box:latest uninstall
 ```
 
 ## Shell Access
@@ -145,3 +144,4 @@ docker exec -it browser-box bash
 # References
 
 - http://fabiorehm.com/blog/2014/09/11/running-gui-apps-with-docker/
+- http://github.com/sameersbn/docker-browser-box
