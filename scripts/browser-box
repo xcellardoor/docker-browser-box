@@ -2,9 +2,11 @@
 
 PATH=/usr/sbin:/usr/bin:/sbin:/bin
 # TODO: ensure this gets updated by entrypoint script on install
-WEB_BROWSER_USER=browser
-BROWSERS=(chromium-browser firefox google-chrome google-chrome-stable tor-browser)
+BROWSER_BOX_USER=${BROWSER_BOX_USER:-browser}
+BROWSER_BOX_REPO=${BROWSER_BOX_REPO:-$USER}
 USER_REPO=${BROWSER_BOX_REPO:-"sameersbn"}
+BROWSERS=(chromium-browser firefox google-chrome google-chrome-stable tor-browser)
+# Persistant data directories CHROME_USERDATA="" FIREFOX_USERDATA=""
 # do we need to use sudo to start docker containers?
 ( id -Gn | grep -q docker ) || SUDO=sudo
 
@@ -30,7 +32,7 @@ cleanup_stopped_browser_box_instances() {
   for c in $(${SUDO} docker ps -a -q)
   do
     image=$(${SUDO} docker inspect -f {{.Config.Image}} ${c})
-    if [[ ${image} == "sameersbn/browser-box:latest" ]]; then
+    if [[ ${image} == "${USER_REPO}/browser-box:latest" ]]; then
       running=$(${SUDO} docker inspect -f {{.State.Running}} ${c})
       if [[ ${running} != true ]]; then
         ${SUDO} docker rm -v "${c}" >/dev/null
@@ -55,6 +57,7 @@ prepare_docker_env_parameters() {
   ENV_VARS+=" --env=DISPLAY"
   ENV_VARS+=" --env=XAUTHORITY=${XAUTH}"
   ENV_VARS+=" --env=TZ=$(cat /etc/timezone)"
+  ENV_VARS+=" --env=BROWSER_BOX_USER=${BROWSER_BOX_USER}"
 }
 
 prepare_docker_volume_parameters() {
@@ -69,11 +72,8 @@ prepare_docker_volume_parameters() {
 # TODO: Need to add tor and chromium userdata dirs
 #       if wanted by the user, maybe use env variables
 prepare_docker_userdata_volumes() {
-  if [[ -n ${CHROME_USERDATA} ]]; then
-    echo " --volume=${CHROME_USERDATA}:/home/${WEB_BROWSER_USER}/.config/google-chrome"
-  fi
-  [ -n ${CHROME_USERDATA} ] && VOLUMES+=" --volume=${CHROME_USERDATA}:/home/${WEB_BROWSER_USER}/.config/google-chrome"
-  [ -n ${FIREFOX_USERDATA} ] && VOLUMES+=" --volume=${FIREFOX_USERDATA}:/home/${WEB_BROWSER_USER}/.mozilla"
+  [ -n ${CHROME_USERDATA} ] && VOLUMES+=" --volume=${CHROME_USERDATA}:/home/${BROWSER_BOX_USER}/.config/google-chrome"
+  [ -n ${FIREFOX_USERDATA} ] && VOLUMES+=" --volume=${FIREFOX_USERDATA}:/home/${BROWSER_BOX_USER}/.mozilla"
 }
 
 prepare_docker_device_parameters() {
