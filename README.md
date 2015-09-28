@@ -22,15 +22,15 @@
  - google-chrome
  - tor-browser
 
-The image uses [X11](http://www.x.org) and [Pulseaudio](http://www.freedesktop.org/wiki/Software/PulseAudio/) unix domain sockets on the host to enable audio/video support in the web browsers. These components are available out of the box on pretty much any modern linux distribution.
+This image uses [X11](http://www.x.org) and [Pulseaudio](http://www.freedesktop.org/wiki/Software/PulseAudio/) UNIX domain sockets on the host to enable audio/video support in the web browsers. These components are available out of the box on pretty much any modern Linux distribution.
 
 ![browser](https://cloud.githubusercontent.com/assets/410147/4377777/2ccda3d2-4352-11e4-9314-122e4f58a30c.gif)
 
 ## Contributing
 
-If you find this image useful here's how you can help:
+If you find this image useful, here's how you can help:
 
-- Send a pull request with your awesome features and bug fixes
+- Send a pull request with your awesome features and bug fixes.
 - Help users resolve their [issues](../../issues?q=is%3Aopen+is%3Aissue).
 
 ## Issues
@@ -55,7 +55,7 @@ This image is available as a [trusted build](//hub.docker.com/r/hurricane/browse
 docker pull hurricane/browser-box:latest
 ```
 
-Alternatively you can build the image yourself.
+Alternatively, you can build the image yourself.
 
 ```bash
 git clone https://github.com/hurricane/docker-browser-box.git
@@ -72,7 +72,7 @@ docker run -it --rm \
 ```
 
 If you would the settings for chrome and firfox to persist
-afer each time the browser is launched then you will need to add additional environment variable to the install command. In the example below "username" needs to get replace with your loggin user name.
+afer each time the browser is launched then you will need to add additional environment variables to the install command. In the example below, "username" needs to be replaced with your login user-name.
 
 ```bash
 docker run -it --rm \
@@ -103,7 +103,7 @@ This will install wrapper scripts to launch:
 
 ## How it works
 
-The wrapper scripts volume mount the X11 and pulseaudio sockets in the launcher container. The X11 socket allows for the user interface display on the host, while the pulseaudio socket allows for the audio output to be rendered on the host.
+The wrapper scripts mount the X11 and pulseaudio sockets within the launcher container. The X11 socket allows for the user interface to be displayed on the host, whilst the pulseaudio socket allows for the audio output to be played via the host.
 
 # Maintenance
 
@@ -135,7 +135,7 @@ docker run -it --rm \
 
 ## Shell Access
 
-For debugging and maintenance purposes you may want access the containers shell. If you are using Docker version `1.3.0` or higher you can access a running containers shell by starting `bash` using `docker exec`:
+For debugging and maintenance purposes you may want access the container's shell. If you are using Docker version `1.3.0` or higher you can access a running container's shell by starting `bash` using `docker exec`:
 
 ```bash
 docker exec -it browser-box bash
