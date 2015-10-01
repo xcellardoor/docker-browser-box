@@ -68,6 +68,7 @@ With the image locally available, install the wrapper scripts using:
 ```bash
 docker run -it --rm \
   --volume /usr/local/bin:/target \
+  --env BROWSER_BOX_REPO=hurricane \
   hurricane/browser-box:latest install
 ```
 
@@ -77,8 +78,9 @@ afer each time the browser is launched then you will need to add additional envi
 ```bash
 docker run -it --rm \
   --volume /usr/local/bin:/target \
-  --env CHROME_USERDATA=/home/username/.chrome
-  --env FIREFOX_USERDATA=/home/username/.mozillia
+  --env CHROME_USERDATA=/home/username/.chrome \
+  --env FIREFOX_USERDATA=/home/username/.mozillia \
+  --env BROWSER_BOX_REPO=hurricane \
   hurricane/browser-box:latest install
 ```
 
