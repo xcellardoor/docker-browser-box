@@ -58,7 +58,7 @@ docker pull hurricane/browser-box:latest
 Alternatively you can build the image yourself.
 
 ```bash
-git clone https://github.com/hurricane/docker-browser-box.git
+git clone https://github.com/hurricanehrndz/docker-browser-box.git
 cd docker-browser-box
 docker build --tag $USER/browser-box .
 ```
